@@ -1,0 +1,239 @@
+CardDavMATE Changelog
+
+version 0.9.5 [2012-03-12]:
+- note: this release contains new configuration option (always use the latest config.js)
+- configuration - added globalSearchTransformAlphabet setting - used for transformation of non-ASCII characters to ASCII (for search support)
+- added search support (search is performed on the addressbook values in the interface + category names)
+- added language selector to login screen (use globalInterfaceLanguage to set the preselected language)
+- added hungarian localization (hu_HU)
+- scrollable resource list (only if needed)
+- minor bug fixes
+
+version 0.9.4 [2012-02-29]:
+- fixed vCard parameter parsing (TYPE=X,Y now works correctly again)
+- fixed date parsing for BDAY and X-ANNIVERSARY attributes (dates with missing '-' caused non-RFC vCard error)
+- correct "\n" unescaping in vCard values if the previous character is '\'
+- updated phone parameter definitions (iOS5 uses "TYPE=voice" in addition of other types)
+- correct header removing from addressbook if contact is removed
+- changed default value for undefined phone type from "main" to "cell" ("main" is Apple specific)
+- added "TYPE=internet" into EMAIL parameters if it is missing (better non-RFC vCard compatibility)
+- added "fax" phone type (in addition of "home fax" and "work fax")
+- use of .prop() instead of .attr() to set 'readonly', 'disabled', 'selected', 'checked' and 'src' properties
+- minor fixes for Slovak and German (thanks Thomas Scheel) localizations
+- other minor fixes
+
+version 0.9.3 [2012-02-17]:
+- added german localization (de_DE) - thanks Marten Gajda
+- fixed invalid switch to PROPFIND if REPORT/sync-collection is unsupported (+ related bugfixes)
+- changed DOM operations to fix Firefox only bugs with 0.9.2 (Firefox or jQuery bug?)
+- fixed "active editor -> logout -> login" problem (inactive resource/addressbook list)
+
+version 0.9.2 [2012-02-13]:
+- security fix: correct globalAccountSettings cleanup after logout
+- note: this release contains new configuration options (always use the latest config.js)
+- configuration - increased default timeout value for configuration account templates from 10 to 30 seconds
+- configuration - changed default configuration for Davical - works also if Davical is installed into subdirectory (instead of domain root directory)
+- configuration - added globalContactStoreFN option - support for custom FN formatting instead of fixed 'prefix,last,middle,first,suffix' (see config.js)
+- configuration - added globalCompatibility option - customizations for 3rd party clients
+- configuration - globalCompatibility: added anniversaryOutputFormat option - supported values: 'apple' (default) and 'other' (see config.js)
+- configuration - added globalInterfaceLanguage option (see config.js and the changelog below)
+- added localization support (new localizations are welcome!)
+- added english localization (en_US)
+- added slovak localization (sk_SK)
+- added italian localization (it_IT) - thanks Luca Ferrario
+- added support for Oracle, SabreDav and probably many other CardDav servers
+- added support for CATEGORIES attribute with auto-suggest for categories in active collection (category separator: Enter)
+- 100% performance improvement for PUT requests (add/edit/move/... operations) - get the modified Etag from PUT response header instead of additional REPORT requests (if the server support this feature, otherwise get the modified vCard with new Etag from the server)
+- notable performance improvements for DOM operations (contact loading and manipulation)
+- correct '\' character escaping in vCard values
+- removed write support for X-EVOLUTION-* attributes (caused many problems and Evolution already support the X-* attributes without "-EVOLUTION" prefix)
+- many other fixes
+
+version 0.9.1 [2012-01-29]:
+- note: this release contains new configuration options (always use the latest config.js)
+- configuration - added lockTimeOut option into globalAccountSettings and globalNetworkCheckSettings - this option is used by the LOCK method and sets the lock timeout for the resource (default: 10000 miliseconds)
+- configuration - new globalDatepickerFormat option - datepicker date format setting (see config.js)
+- added support for BDAY attribute
+- added support for X-ANNIVERSARY, X-EVOLUTION-ANNIVERSARY and X-ABDATE (with "anniversary flag") attributes
+- added support for multiple URL attributes with params (many clients use this approach in vCard 3.0 even if params are not RFC compliant)
+- contact images are displayed with correct aspect ratio
+- CSS fixes (login page padding problem, icon positioning problem for data handler icons in Firefox and many Windows only Firefox fixes)
+- major performance improvement for country/address format switching
+- added "Note: your browser is unsupported!" message to login screen for IE and Opera
+- increased default timeOut values in config.js to 10000 (reported problems with slow/overloaded servers)
+- updated jQuery-UI to 1.8.17
+- "add contact" and edit operations automatically set focus on "Firstname" in the editor
+- click on the active contact is ignored (there is no reason to reload it into editor)
+- renamed account-uid to data-account-uid (HTML5 compliance)
+- added missing alt attributes in index.html (HTML5 compliance)
+- removed "meta http-equiv" from index.html (HTML5 compliance)
+- updated readme.txt
+
+version 0.9.0 [2012-01-10]:
+- note: if you use Davical with cross-domain setup you need to update your apache configuration (see misc/config_davical.txt) 
+- note: if you use MacOS X Lion calendarserver you need to re-patch your installation (see misc/readme_lion.txt and the changelog below)
+- added support for drag&drop contact move operation (not available if the source or destination collection is read-only)
+- added support for "Delete from Group" (available if an Apple contact group is loaded)
+- added support for drag&drop add contact to contact group (available for active resource and its contact groups)
+- major internal cleanup and bugfixes
+- fixed auth module/generic plugin HTTP request used for authentication
+- minor iOS related and other CSS fixes
+
+version 0.8.3 [2011-12-25]:
+- configuration: new globalAddressCountryFavorites option - favorite countries at the top of the country list in the editor
+- increase of RegExp performance by ~70% (use of pre-built regular expressions)
+- additional major performance improvements (especially for large collections) by using late vCard processing (the slowest vCard transformations are performed first time when the contact is loaded into the editor)
+- added read/write backward compatibility support for the following non-standard vCard attributes: X-ASSISTANT, X-EVOLUTION-ASSISTANT, X-MANAGER, X-EVOLUTION-MANAGER, X-SPOUSE, X-EVOLUTION-SPOUSE
+- added "home mobile" and "work mobile" options for PHONE attribute
+- the loading animation (spinning ball) now disappears only after the entire collection is loaded and inserted into DOM
+- fixed the "The contact on the server was changed and reloaded!" message error caused by wrong vCard comparison
+- the collection list key value for empty string is defined as '#'
+- major CSS cleanup and cross browser CSS fixes
+- new login screen :-)
+
+version 0.8.2 [2011-12-15]:
+- configuration: new globalAddressCountryEquivalence option - support for regex based country detection in ADR attribute (see config.js)
+- added absolute URL support to resource search
+- added PRODID attribute support
+- added support for non-RFC vCards with missing N and/or FN attributes (SOGo Connector bug related to company vCards)
+- added automatic transformation for non-RFC TEL, EMAIL and URL attributes (Evolution bugs)
+- CSS tweaks (no select boxes if the editor is not in "edit" mode) and fixes
+- X-* IM attributes are ignored only if there is an IMPP attribute with the same value
+- the collection list key value for most common non-alphabet characters is defined as '#'
+
+version 0.8.1 [2011-12-10]:
+- minor svg icon fixes
+- better non-RFC vCard compatibility (now it is possible to delete contacts without UID attribute)
+- fixed problems with the N attribute if not all parts of the value are defined
+- fixed problems with the X-* IM attributes if no parameters defined for the attribute
+
+version 0.8.0 [2011-12-05]:
+- new vector graphics (replaced png icons with svg icons)
+- added support for MiddleName (vCard N attribute) with possibility to use "middle" in globalCollectionSort and globalCollectionDisplay configuration options
+- changed default values for globalCollectionSort and globalCollectionDisplay to "last,middle,first"
+- added support for Department (vCard ORG attribute)
+- added support for NickName (vCard NICKNAME attribute)
+- added support for JobTitle (vCard TITLE attribute)
+- added support for URL (vCard URL attribute)
+- added URI handler for TEL attributes - the default handler is tel: (see config.js)
+- added URI handler for EMAIL attributes - the default handler is mailto: (see config.js)
+- added URI handler for URL attribute - if no handler defined in the URL value the default handler is http:// (see config.js)
+- added update notification (see config.js)
+- removed Opera support (there are too many issues with Opera CSS support, SVG, missing CORS, ...)
+- update jQuery to version 1.7.1 (minimized version)
+- currently unused regexes in vcard_rfc_regex.js are commented out (minor performance improvement)
+- CSS fixes and tweaks
+- fixed undefined variable problem with non-RFC N attribute in Apple vCard groups
+- clicking to the active collection not reloads it from the server (there is no reason if it is already loaded)
+- switching back from vCard group to the collection not reloads the collection from the server (there is no reason if it is already loaded)
+- if there is no valid photo in the vCard, checking/unchecking the "Company Contact" changes the default picture in the editor (note: CardDavMATE default pictures are not saved to the server)
+- fixed several bugs by disallowing to click to resource or contact when editing another contact (fade in/out animation on resource and collection list)
+
+version 0.7.3 [2011-11-17]:
+- note: this release contains new configuration options (always use the latest config.js)
+- configuration: new globalCollectionSort and globalCollectionDisplay options (see config.js)
+- configuration: new additionalResources option available for globalNetworkCheckSettings (see config.js)
+- configuration: changed default values for timeOut to 6000 and globalSyncResourcesInterval to 30000
+- configuration: added additional examples for globalNetworkCheckSettings
+- configuration: added comments for timeOut
+- changed default settings - CardDavMATE now works without any additional setup if installed into Davical subdirectory (default setup allows access to own collections for logged user)
+- renamed davical auth module to generic (this module uses basic HTTP authentication to remote server)
+- added error message if non-RFC vCard is detected (please send me the problematic vCard and I will try to fix your issue)
+- added support for Opera (only for non cross domain setup)
+- fixed timeout value for LOCK requests (previously the milisecond value was used as second value)
+- fixed resource removal bug
+- added animation for contact switching (fix for graphic glitches with slow Javascript engines)
+- added default user and company icons for vCard editor
+- added icon for company contacts in contact list
+- added cancel button when creating a new contact (it reloads the previously active contact)
+- disabled edit button in vCard editor for read-only collections
+- disabled "add icon" in contact list for read-only collections
+- moved the delete button in the editor more to the right
+- autofocus for the login field (disabled for demo mode)
+- new cross browser CSS for buttons
+- fixed checkbox CSS for Opera
+- added apple-mobile-web-app-capable meta tag into index.html (useful for web app shortcuts on iOS)
+- minor CSS fixes for iOS
+- minor CSS fixes - scrollbars are shown only when needed
+
+version 0.7.2 [2011-11-10]:
+- configuration: new globalNetworkCheckSettings configuration option for rapid client setup
+
+version 0.7.1 [2011-11-10]:
+- improved support for non-RFC vCards by adding missing newlines (Evolution problem)
+- support for non-RFC vCards without UID parameter
+- fixed a bug that caused the vCard groups to remain in the interface even after deletion from the server
+- minor vCard group related bugfixes
+
+version 0.7.0 [2011-11-09]:
+- note: this release contains many configuration changes (always use the latest config.js)
+- note: if you use Davical you need to update your apache configuration (see misc/config_davical.txt) 
+- note: if you use MacOS X Lion calendarserver you need to re-patch your installation (see misc/readme_lion.txt and the changelog below)
+- configuration - renamed updateInterval option in globalAccountSettings to syncInterval (now the name corresponds to reality)
+- configuration - removed globalReloadCollection setting (use the syncInterval in globalAccountSettings instead)
+- configuration - added globalSyncResourcesInterval configuration option
+- configuration - added crossDomain option into globalAccountSettings and globalNetworkAccountSettings (default: true - set to false if your CardDavMATE protocol/server/port is the same as your Davical installation or if you use unsupported browser with mod_proxy /if you don't know what is mod_proxy do not set to false/)
+- configuration - updated auth module to exactly match the changed configuration options
+- configuration - renamed configuration variable in auth/plugins/ldap_conf.inc
+- new patch for MacOS X Lion calendarserver to support cross domain queries in Gecko based browsers (http://www.w3.org/TR/cors/) with updated instructions (see misc/readme_lion.txt in misc directory)
+- new auth module for Davical server (see auth/config.inc and auth/plugins/davical_conf.inc)
+- much better synchronization (bandwidth optimization)
+- added "vCard group" support used by Apple
+- major style sheet changes, tweaks and cleanup
+- update jQuery to version 1.7 and related fixes
+- migrate to jQuery 1.7 API
+- added IRC option into IM types
+- fixed fast collection switching concurrency problem (contacts from the previous collection are removed from the contact list)
+- fixed a bug from 0.6.x that caused the contacts to remain in the interface even after deletion from the server
+- improved support for non-RFC vCards by removing redundant newlines
+- better IMPP equivalence checking with old X-* IM attributes
+- better handling of namespaces in XML responses using custom minimalist jQuery plugin
+- added readme.txt with setup instructions
+- added help for common network/installation problems: misc/readme_network.txt
+- disallow browser to show login window popup after unsuccessful authentication using auth module (see the new $config['auth_send_authenticate_header'] option in the auth/config.inc)
+- the auth/modules/ renamed to auth/plugins/ (and related fixes)
+- fixed resource and collection sorting (wrong function call)
+- the logout button is shown only if you use globalNetworkAccountSettings
+- fixed Andorra, Jordan, Kazakhstan and Ukraine address fields
+
+version 0.6.3 [2011-10-22]:
+- patch for MacOS X Lion calendarserver to support cross domain queries (misc directory)
+- updated instructions for MacOS X Lion server and moved readme.txt to misc/lion_readme.txt
+
+version 0.6.2 [2011-10-22]:
+- fixed undefined variable in the error message
+
+version 0.6.1 [2011-10-21]:
+- MacOSX Lion Server support (more info in readme.txt)
+- fixed login problems after previous logout
+- various bugfixes and improvements
+
+version 0.6.0 [2011-10-19]:
+- major internal code cleanup
+- added default .htaccess file to prevent caching (mod_headers must be enabled!)
+- various config.js changes (always use the latest version of configuration file!)
+- instead of the static client configuration, now it is possible to set configuration URL in config.js (this URL must return valid configuration XML after successful HTTP auth)
+- added LDAP auth module which generates XML configuration for the client (after successful HTTP authentication)
+- if the configuration URL is set, the client shows login screen and deny access until the user is not authenticated (and no valid XML returned)
+- fixed a bug which causes unaccessible resources if user has no access to read the resource privileges
+- fixed an undefined variable bug which occurs when new contact is created in empty collection
+- correct UID generation for new contacts
+- correct unprocessed (unknown) elements handling when contact is edited
+- correct behavior when deleting the last contact from the collection
+- major bug fixes in resource.js and addressbook.js
+- default picture for contact (shown if picture not present in vCard)
+- added logout button (right top corner key icon)
+
+version 0.5.2 [2011-10-06]:
+- fixed regular expressions for login matching in deleteVcardFromCollection and putVcardToCollection functions (fixes add/update/delete operations)
+- fixed several CSS issues 
+- added new configuration option globalWithCredentials which sets withCredentials for cross domain queries in jQuery (note: if the value is set to true, use of Access-Control-Allow-Origin "*" is not allowed)
+
+version 0.5.1 [2011-10-03]:
+- changed the delete operation to asynchronous (now all operations are async)
+- the contact is now reloaded in the interface immediately after the successful "save" operation (in the middle of the "save" animation)
+- minor animation fixes (especially for contact deletion)
+
+version 0.5.0 [2011-10-01]:
+- initial public release
+
