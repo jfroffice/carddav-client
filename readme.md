@@ -1,2 +1,2 @@
-# P Ce projet est un fork du projet initial CardDavMATE hébergé sur http://www.inf-it.com/
+# This project is a fork of initial project called CardDavMATE hosting on http://www.inf-it.com/
 
