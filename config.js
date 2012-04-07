@@ -65,7 +65,7 @@ var globalNetworkCheckSettings={href: 'http://cloud.pubplongeeaixois.org/caldav.
 //   it_IT (Italian; thanks Luca Ferrario)
 //   hu_HU (Hungarian)
 //   sk_SK (Slovak)
-var globalInterfaceLanguage='en_US';
+var globalInterfaceLanguage='fr_FR';
 
 // compatibility settings
 //  anniversaryOutputFormat:
