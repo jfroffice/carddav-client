@@ -430,7 +430,7 @@ localization['fr_FR']=
 
 	txtPhone: 'Téléphone',
 	txtPhoneWork: 'travail',
-	txtPhoneHome: 'docimicile',
+	txtPhoneHome: 'domicile',
 	txtPhoneCell: 'mobile',
 	txtPhoneCellWork: 'mobile travail',
 	txtPhoneCellHome: 'mobile domicile',
