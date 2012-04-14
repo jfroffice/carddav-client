@@ -726,7 +726,7 @@ localization['fr_FR']=
     txtAddressCountryTL: 'Timor-Leste',
     txtAddressCountryTG: 'Togo',
     txtAddressCountryTO: 'Tonga',
-    txtAddressCountryTT: 'Trinidad et Tobag'o,
+    txtAddressCountryTT: 'Trinidad et Tobago',
     txtAddressCountryTN: 'Tunisie',
     txtAddressCountryTR: 'Turquie',
     txtAddressCountryTM: 'Turkménistan',
