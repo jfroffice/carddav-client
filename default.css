@@ -204,8 +204,7 @@ body, input, select, textarea
 	border-right: 1px solid;
 	border-right-color: #c0c0c0;
 	width: 250px;
-	overflow: auto;
-	overflow-x: hidden;
+	overflow: hidden;
 	background: #ffffff;
 
 	height: 28px;
@@ -215,10 +214,15 @@ body, input, select, textarea
 	border-bottom-color: #c0c0c0;
 }
 
-#System > #SearchBox > input[data-type=search]
+#System > #SearchBox > .container
 {
-	margin-top: 5px;
-	margin-left: -7px !important;
+	position: absolute;
+	top: 5px;
+	left: 29px;
+	width: 192px;
+}
+#System > #SearchBox *> input[data-type=search]
+{
 	width: 192px;
 	background-color: #ffffff;
 }
@@ -303,37 +307,38 @@ body, input, select, textarea
 	z-index: 10;
 }
 
-#Login *> img[data-type=system_logo]
+#Login img[data-type=system_logo]
 {
 	padding-bottom: 5px;
 }
 
-#Login *> table, #System *> table
+#Login table, #System table
 {
 	padding: 0px 0px 0px 0px;
 	border: none;
 	border-collapse: collapse;
 }
 
-#Login *> td, #System *> td
+#Login td, #System td
 {
+	position: relative;
 	padding: 0px 3px 0px 0px;
 	height: 21px;	/* subpixel problem if top padding is used */
 	vertical-align: top;
 	border: none;
 }
 
-#System *> td.clean
+#System td.clean
 {
 	padding: 0px 0px 0px 0px !important;
 }
 
-#System *> td.buttons
+#System td.buttons
 {
 	padding-top: 10px;
 }
 
-#System *> td.type
+#System td.type
 {
 	width: 116px;
 }
@@ -355,14 +360,15 @@ select
 	padding-left: 3px;		/* minor problem with chrome on windows */
 	padding-right: 13px;	/* original: 18 - minor problem with chrome on windows */
 
+	appearance: none;
 	-webkit-appearance: none;
+
+	border-radius: 0px;
 	-webkit-border-radius: 0px;
+	-moz-border-radius: 0px;
 
 	outline: none;
-	border-radius: 0px;
-
 	-moz-outline: none;
-	-moz-border-radius: 0px;
 }
 
 @-moz-document url-prefix() {
@@ -689,9 +695,13 @@ textarea[readonly]
 	text-align: baseline !important;
 }
 
-#EditorBox *> .op	/* + and - image buttons */
+#EditorBox *> .opw	/* + and - image button IE bug with input type="image" and width */
 {
 	width:13px;
+}
+
+#EditorBox *> .op	/* + and - image buttons (width is defined separately in .opw) */
+{
 	padding-top: 3px;
 }
 
@@ -977,6 +987,19 @@ textarea[readonly]
 	background-color: #b9b9b9;
 	border-top-color: #f0f0f0;
 	border-bottom-color: #c0c0c0;
+}
+
+@media only screen and (device-width: 1536px)
+{
+	/* Rule matched by 1024x768 tablets, like the iPad and iPad2 and ignored by other browsers */
+	.ablist_item:hover
+	{
+		cursor: default;
+		color: #404040;
+		background-color: #ffffff;
+		border-top-color: #ffffff;
+		border-bottom-color: #ffffff;
+	}
 }
 
 @media only screen and (device-width: 768px)

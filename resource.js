@@ -345,7 +345,7 @@ function ResourceList()
 							$(this).removeClass('search_hide');
 						},
 						prepareQuery: function (val){
-							return val.multiReplace(globalSearchTransformAlphabet).split(' ');
+							return val.multiReplace(globalSearchTransformAlphabet).toLowerCase().split(' ');
 						},
 						onBefore: function(){
 							if($('#SearchBox').find('input[data-type="search"]').val()=='')

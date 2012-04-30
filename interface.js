@@ -47,7 +47,7 @@ function processEditorElements(processingType, inputIsReadonly)
 	$('[data-type^="date_"]').prop('disabled', disabled || readonly);
 
 	// family name, given name, and organization name
-	var typeList = new Array('family','given','middle','nickname','date_bday','date_anniversary','tags','title','department','org');
+	var typeList = new Array('family','given','middle','nickname','prefix','suffix','date_bday','date_anniversary','tags','title','department','org');
 	for(i=0;i<typeList.length;i++)
 		$('[id=vcard_editor]').find('[data-type="'+typeList[i]+'"]').prop('readonly',readonly);
 
@@ -215,6 +215,9 @@ function editor_cleanup(inputLoadEmpty)
 		}
 	});
 
+	// CUSTOM PLACEHOLDER (initialization for the editor)
+	$('#ABContact').find('input[placeholder],textarea[placeholder]').placeholder();
+
 	if(inputLoadEmpty==true)
 		$('#EditorBox').fadeTo(100,1);
 }
@@ -263,8 +266,7 @@ function set_address_country(inputSelectedAddressObj)
 	addressElement.find('[data-addr-fid]').each(
 		function(index,element)
 		{
-			$(element).find('input').attr('data-addr-field','');
-			$(element).find('input').attr('placeholder','');
+			$(element).find('input').attr({'data-addr-field': '', 'placeholder': ''}).unplaceholder();	// REMOVE CUSTOM PLACEHOLDER
 		}
 	);
 
@@ -314,6 +316,8 @@ function set_address_country(inputSelectedAddressObj)
 		}
 	);
 
+	// CUSTOM PLACEHOLDER (reinitialization due to possible placeholder value change)
+	addressElement.find('input[data-type="value"][placeholder],textarea[data-type="value"][placeholder]').placeholder();
 }
 
 function add_element(inputElementID, inputParentSelector, newElementSelector, inputAddClassSelector, inputDelClassSelector, maxElements, newElementID)
@@ -322,6 +326,11 @@ function add_element(inputElementID, inputParentSelector, newElementSelector, in
 	if((count=inputElementID.closest(inputParentSelector).parent().children(inputParentSelector).length) < maxElements)
 	{
 		newElement=$(newElementSelector).clone().wrap('<div>');
+
+		// CUSTOM PLACEHOLDER
+		// remove the "placeholder" data (custom placeholder label for IE)
+		newElement.find('label').remove();
+		newElement.find('[data-type="value"]').removeAttr('id','').removeClass('placeholder-input');
 
 		// unselect each selected element
 		newElement.find('option').prop('selected',false);
@@ -339,6 +348,11 @@ function add_element(inputElementID, inputParentSelector, newElementSelector, in
 		inputElementID.filter(inputAddClassSelector).css('visibility','hidden');
 		// add the new element (with enabled "add" button)
 		inputElementID.parent().after(newElement);
+
+		// CUSTOM PLACEHOLDER
+		// enable custom placeholder support (it is enable only if needed)
+		$(newElementSelector).find('input[data-type="value"][placeholder],textarea[data-type="value"][placeholder]').placeholder();
+
 		// enable the "del" button on all elements
 		$(inputParentSelector).find(inputDelClassSelector).css('visibility','');
 
@@ -399,6 +413,9 @@ $(document).on('keyup change', '[data-type^="date_"]', function(){
 	}
 });
 
+// Timepicker hack (prevent IE to re-open the datepicker on date click + focus)
+var globalTmpTimePickerHackTime=new Object();
+
 $(document).on('focus', '[data-type^="date_"]', function(){if(!$(this).hasClass('hasDatepicker')){$(this).datepicker({disabled: $(this).prop('readonly') || $(this).prop('disabled'), showMonthAfterYear: true, prevText: '', nextText: '', monthNamesShort: ['01','02','03','04','05','06','07','08','09','10','11','12'], dateFormat: globalDatepickerFormat, defaultDate: '-'+Math.round(30*365.25-1), minDate: '-120y', maxDate: '+0', yearRange: 'c-120:+0', firstDay: 0, changeMonth: true, changeYear: true,
 	beforeShow: function(input, inst)	// set the datepicker value if the date is out of range (min/max)
 	{
@@ -419,6 +436,12 @@ $(document).on('focus', '[data-type^="date_"]', function(){if(!$(this).hasClass(
 			else if(currentDate>maxDate)
 				$(this).val(maxDateText);
 		}
+
+		// Timepicker hack (prevent IE to re-open the datepicker on date click + focus)
+		var index=$(this).attr("data-type");
+		var d = new Date();
+		if(globalTmpTimePickerHackTime[index]!=undefined && d.getTime()-globalTmpTimePickerHackTime[index]<200)
+			return false;
 	},
 	onClose: function(dateText, inst)	// set the datepicker value if the date is out of range (min/max) and reset the value to proper format (for example 'yy-mm-dd' allows '2000-1-1' -> we need to reset the value to '2000-01-01')
 	{
@@ -441,6 +464,12 @@ $(document).on('focus', '[data-type^="date_"]', function(){if(!$(this).hasClass(
 			else
 				$(this).val($.datepicker.formatDate(globalDatepickerFormat, currentDate));
 		}
+
+		// Timepicker hack (prevent IE to re-open the datepicker on date click + focus)
+		var index=$(this).attr("data-type");
+		var d = new Date();
+		globalTmpTimePickerHackTime[index]=d.getTime();
+
 		$(this).focus();
 	}
 });
@@ -449,7 +478,34 @@ $(this).mousedown(function(){
 		$(this).datepicker('hide');
 	else
 		$(this).datepicker('show');
-})}});
+});
+$(this).blur(function(event){
+	// handle onblur event because datepicker can be already closed
+	// note: because onblur is called more than once we can handle it only if there is a value change!
+	if($(this).val()!=$.datepicker.formatDate(globalDatepickerFormat, $.datepicker.parseDate(globalDatepickerFormat, $(this).val())))
+	{
+		var valid=true;
+		try {var currentDate=$.datepicker.parseDate(globalDatepickerFormat, $(this).val())}
+		catch (e) {valid=false}
+
+		if(valid==true)
+		{
+			var minDateText=$(this).datepicker('option', 'dateFormat', globalDatepickerFormat).datepicker('option', 'minDate');
+			var maxDateText=$(this).datepicker('option', 'dateFormat', globalDatepickerFormat).datepicker('option', 'maxDate');
+
+			var minDate=$.datepicker.parseDate(globalDatepickerFormat, minDateText);
+			var maxDate=$.datepicker.parseDate(globalDatepickerFormat, maxDateText);
+
+			if(currentDate<minDate)
+				$(this).val(minDateText);
+			else if(currentDate>maxDate)
+				$(this).val(maxDateText);
+			else
+				$(this).val($.datepicker.formatDate(globalDatepickerFormat, currentDate));
+		}
+	}
+})
+}});
 
 phoneMax=20;
 $(document).on('click', '[data-type="\\%phone"] [data-type="\\%add"] input', function(ignoreMaxElements){add_element($(this).parent(),'[data-type="\\%phone"]','[data-type="\\%phone"]:last','[data-type="\\%add"]','[data-type="\\%del"]',phoneMax,globalCounter['phoneID']++)});

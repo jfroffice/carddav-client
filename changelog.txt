@@ -1,5 +1,28 @@
 CardDavMATE Changelog
 
+version 0.9.6 [2012-04-25]:
+- note: if you use Davical with cross-domain setup see the modified Apache configuration in misc/config_davical.txt (solved problem with CardDAV-Sync from Marten Gajda)
+- note: if you use MacOS X Lion calendarserver it is recommended to re-patch your installation (see misc/readme_lion.txt and the changelog below)
+- configuration - changed default syncInterval from 15000 to 30000
+- added support for automatic detection of crossDomain option in globalAccountSettings, globalNetworkCheckSettings and globalNetworkAccountSettings (if not set to boolean true/false it is automatically detected; default is null - autodetect)
+- added IE9+ support (non cross-domain setup only /IE9 & jQuery limitation/; minor graphics glitches due to missing CSS support for "disabled" html elements)
+- added support for prefix and suffix (vCard N attribute)
+- added Czech localization (cs_CZ)
+- added Danish localization (da_DK) - thanks Niels Bo Andersen
+- fixed search with upper case letters not present in globalSearchTransformAlphabet
+- fixed parsing of double quoted vCard param values (who use this?)
+- fixed Andorra address fields
+- fixed minor graphics glitch with update notification after logout and new login
+- updated auth module to support multiple resources in response + updated auth/config.inc with modified templates
+- updated misc/config_davical.txt (better handling of preflighted OPTION requests)
+- updated misc/calendarserver_CardDavMATE.diff (support for cross-domain queries with X-Requested-With header /upcoming Safari 5.2/)
+- updated default globalSearchTransformAlphabet in config.js
+- updated CSS detection rule for iPad (new screen resolution for iPad 3)
+- updated jQuery to 1.7.2
+- updated jQuery-UI to 1.8.19
+- replaced .attr('value'[, ...]) with .val([...])
+- many other fixes
+
 version 0.9.5 [2012-03-12]:
 - note: this release contains new configuration option (always use the latest config.js)
 - configuration - added globalSearchTransformAlphabet setting - used for transformation of non-ASCII characters to ASCII (for search support)

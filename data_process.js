@@ -81,12 +81,12 @@ function dataToVcard(accountUID, inputUID, inputFilterUID, inputEtag)
 		process_elem=vCard.tplC['contentline_N'];
 		process_elem=process_elem.replace('##:::##group_wd##:::##','');
 		process_elem=process_elem.replace('##:::##params_wsc##:::##','');
-		process_elem=process_elem.replace('##:::##prefix##:::##','');
-		process_elem=process_elem.replace('##:::##suffix##:::##','');
 	}
 	process_elem=process_elem.replace('##:::##family##:::##',vcardEscapeValue($('[id="vcard_editor"] [data-type="family"]').val()));
 	process_elem=process_elem.replace('##:::##given##:::##',vcardEscapeValue($('[id="vcard_editor"] [data-type="given"]').val()));
 	process_elem=process_elem.replace('##:::##middle##:::##',vcardEscapeValue($('[id="vcard_editor"] [data-type="middle"]').val()));
+	process_elem=process_elem.replace('##:::##prefix##:::##',vcardEscapeValue($('[id="vcard_editor"] [data-type="prefix"]').val()));
+	process_elem=process_elem.replace('##:::##suffix##:::##',vcardEscapeValue($('[id="vcard_editor"] [data-type="suffix"]').val()));
 	vCardText+=process_elem;
 
 // FN (extracted from newly created N [previous "process_elem"], required by RFC)
@@ -136,7 +136,7 @@ function dataToVcard(accountUID, inputUID, inputFilterUID, inputEtag)
 	vCardText+=process_elem;
 
 // CATEGORIES
-	if((value=$('[id="vcard_editor"] [data-type="\\%categories"]').find('input[data-type="value"]').attr('value'))!='')
+	if((value=$('[id="vcard_editor"] [data-type="\\%categories"]').find('input[data-type="value"]').val())!='')
 	{
 		if(vCard.tplM['contentline_CATEGORIES']!=null && (process_elem=vCard.tplM['contentline_CATEGORIES'][0])!=undefined)
 		{
@@ -1000,18 +1000,20 @@ function vcardToData(inputContact, inputIsReadonly)
 			parsed_value=vcardSplitValue(parsed[4],';');
 
 			if(parsed_value[0]!=undefined)
-				$('[id="vcard_editor"] [data-type="family"]').val(vcardUnescapeValue(parsed_value[0]));
+				$('[id="vcard_editor"] [data-type="family"]').val(vcardUnescapeValue(parsed_value[0])).change();
 			if(parsed_value[1]!=undefined)
-				$('[id="vcard_editor"] [data-type="given"]').val(vcardUnescapeValue(parsed_value[1]));
+				$('[id="vcard_editor"] [data-type="given"]').val(vcardUnescapeValue(parsed_value[1])).change();
 			if(parsed_value[2]!=undefined)
-				$('[id="vcard_editor"] [data-type="middle"]').val(vcardUnescapeValue(parsed_value[2]));
+				$('[id="vcard_editor"] [data-type="middle"]').val(vcardUnescapeValue(parsed_value[2])).change();
+			if(parsed_value[3]!=undefined)
+				$('[id="vcard_editor"] [data-type="prefix"]').val(vcardUnescapeValue(parsed_value[3])).change();
+			if(parsed_value[4]!=undefined)
+				$('[id="vcard_editor"] [data-type="suffix"]').val(vcardUnescapeValue(parsed_value[4])).change();
 
 			// values not directly supported by the editor (old values are kept intact)
 			vCard.tplM['contentline_N'][0]=vCard.tplC['contentline_N'];
 			vCard.tplM['contentline_N'][0]=vCard.tplM['contentline_N'][0].replace(/##:::##group_wd##:::##/g,parsed[1]);
 			vCard.tplM['contentline_N'][0]=vCard.tplM['contentline_N'][0].replace(/##:::##params_wsc##:::##/g,parsed[3]);
-			vCard.tplM['contentline_N'][0]=vCard.tplM['contentline_N'][0].replace(/##:::##prefix##:::##/g,(parsed_value[3]==undefined ? '' : parsed_value[3]));
-			vCard.tplM['contentline_N'][0]=vCard.tplM['contentline_N'][0].replace(/##:::##suffix##:::##/g,(parsed_value[4]==undefined ? '' : parsed_value[4]));
 
 			// remove the processed parameter
 			vcard=vcard.replace(vcard_element[0],'\r\n');
@@ -1074,7 +1076,7 @@ function vcardToData(inputContact, inputIsReadonly)
 				// parsed (contentline_parse) = [1]->"group.", [2]->"name", [3]->";param;param", [4]->"value"
 				parsed=vcard_element[0].match(vCard.pre['contentline_parse']);
 
-				$('[id="vcard_editor"] [data-type="\\%note"]').find('textarea').text(vcardUnescapeValue(parsed[4]));
+				$('[id="vcard_editor"] [data-type="\\%note"]').find('textarea').text(vcardUnescapeValue(parsed[4])).change();
 
 				// values not directly supported by the editor (old values are kept intact)
 				vCard.tplM['contentline_NOTE'][0]=vCard.tplC['contentline_NOTE'];
@@ -1146,7 +1148,7 @@ function vcardToData(inputContact, inputIsReadonly)
 			// parsed (contentline_parse) = [1]->"group.", [2]->"name", [3]->";param;param", [4]->"value"
 			parsed=vcard_element[0].match(vCard.pre['contentline_parse']);
 
-			$('[data-type="nickname"]').val(vcardUnescapeValue(parsed[4]));
+			$('[data-type="nickname"]').val(vcardUnescapeValue(parsed[4])).change();
 
 			// values not directly supported by the editor (old values are kept intact)
 			vCard.tplM['contentline_NICKNAME'][0]=vCard.tplC['contentline_NICKNAME'];
@@ -1187,7 +1189,7 @@ function vcardToData(inputContact, inputIsReadonly)
 
 			if(valid==true)
 			{
-				$('[data-type="date_bday"]').val(vcardUnescapeValue($.datepicker.formatDate(globalDatepickerFormat, date)));
+				$('[data-type="date_bday"]').val(vcardUnescapeValue($.datepicker.formatDate(globalDatepickerFormat, date))).change();
 
 				// values not directly supported by the editor (old values are kept intact)
 				vCard.tplM['contentline_BDAY'][0]=vCard.tplC['contentline_BDAY'];
@@ -1232,7 +1234,7 @@ function vcardToData(inputContact, inputIsReadonly)
 
 			if(valid==true)
 			{
-				$('[data-type="date_anniversary"]').val(vcardUnescapeValue($.datepicker.formatDate(globalDatepickerFormat, date)));
+				$('[data-type="date_anniversary"]').val(vcardUnescapeValue($.datepicker.formatDate(globalDatepickerFormat, date))).change();
 
 				// values not directly supported by the editor (old values are kept intact)
 				vCard.tplM['contentline_X-ANNIVERSARY'][0]=vCard.tplC['contentline_X-ANNIVERSARY'];
@@ -1270,7 +1272,7 @@ function vcardToData(inputContact, inputIsReadonly)
 			// parsed (contentline_parse) = [1]->"group.", [2]->"name", [3]->";param;param", [4]->"value"
 			parsed=vcard_element[0].match(vCard.pre['contentline_parse']);
 
-			$('[data-type="title"]').val(vcardUnescapeValue(parsed[4]));
+			$('[data-type="title"]').val(vcardUnescapeValue(parsed[4])).change();
 
 			// values not directly supported by the editor (old values are kept intact)
 			vCard.tplM['contentline_TITLE'][0]=vCard.tplC['contentline_TITLE'];
@@ -1308,9 +1310,9 @@ function vcardToData(inputContact, inputIsReadonly)
 			parsed_value=vcardSplitValue(parsed[4],';');
 
 			if(parsed_value[0]!=undefined)
-				$('[data-type="org"]').val(vcardUnescapeValue(parsed_value[0]));
+				$('[data-type="org"]').val(vcardUnescapeValue(parsed_value[0])).change();
 			if(parsed_value[1]!=undefined)
-				$('[data-type="department"]').val(vcardUnescapeValue(parsed_value[1]));
+				$('[data-type="department"]').val(vcardUnescapeValue(parsed_value[1])).change();
 
 			// values not directly supported by the editor (old values are kept intact)
 			vCard.tplM['contentline_ORG'][0]=vCard.tplC['contentline_ORG'];
@@ -1386,7 +1388,7 @@ function vcardToData(inputContact, inputIsReadonly)
 
 			var img_type='';
 			// parsed_value = [1..]->PHOTO-params
-			parsed_value=vcardSplitValue(parsed[3],';');
+			parsed_value=vcardSplitParam(parsed[3]);
 			for(i=1;i<parsed_value.length;i++)
 				if((type_value=parsed_value[i].match(RegExp('TYPE=(.*)','i')))!=undefined)
 				{
@@ -1466,7 +1468,7 @@ function vcardToData(inputContact, inputIsReadonly)
 			// parsed (contentline_parse) = [1]->"group.", [2]->"name", [3]->";param;param", [4]->"value"
 			parsed=vcard_element[0].match(vCard.pre['contentline_parse']);
 			// parsed_param = [1..]->ADR-params
-			parsed_param=vcardSplitValue(parsed[3],';');
+			parsed_param=vcardSplitParam(parsed[3]);
 			// parsed_value = [1..]->ADR elements
 			parsed_value=vcardSplitValue(parsed[4],';');
 
@@ -1475,7 +1477,7 @@ function vcardToData(inputContact, inputIsReadonly)
 			$('[id="vcard_editor"] [data-type="\\%address"]').last().find('[data-type="value"]').each(
 				function(index,element)
 				{
-					if($(element).attr('value')!='')
+					if($(element).val()!='')
 					{
 						found=1;
 						return false;
@@ -1490,7 +1492,7 @@ function vcardToData(inputContact, inputIsReadonly)
 			$('[id="vcard_editor"] [data-type="\\%address"]').last().find('[data-type="value"]').each(
 				function(index,element)
 				{
-					if($(element).attr('value')!='')
+					if($(element).val()!='')
 					{
 						found=1;
 						return false;
@@ -1593,12 +1595,12 @@ function vcardToData(inputContact, inputIsReadonly)
 
 			tmp.find('[data-autoselect]').change();
 
-			$('[data-type="\\%address"]:eq('+element_i+') [data-addr-field="pobox"]').attr('value', vcardUnescapeValue(parsed_value[0]));
-			$('[data-type="\\%address"]:eq('+element_i+') [data-addr-field="extaddr"]').attr('value', vcardUnescapeValue(parsed_value[1]));
-			$('[data-type="\\%address"]:eq('+element_i+') [data-addr-field="street"]').attr('value', vcardUnescapeValue(parsed_value[2]));
-			$('[data-type="\\%address"]:eq('+element_i+') [data-addr-field="locality"]').attr('value', vcardUnescapeValue(parsed_value[3]));
-			$('[data-type="\\%address"]:eq('+element_i+') [data-addr-field="region"]').attr('value', vcardUnescapeValue(parsed_value[4]));
-			$('[data-type="\\%address"]:eq('+element_i+') [data-addr-field="code"]').attr('value', vcardUnescapeValue(parsed_value[5]));
+			$('[data-type="\\%address"]:eq('+element_i+') [data-addr-field="pobox"]').val(vcardUnescapeValue(parsed_value[0])).change();
+			$('[data-type="\\%address"]:eq('+element_i+') [data-addr-field="extaddr"]').val(vcardUnescapeValue(parsed_value[1])).change();
+			$('[data-type="\\%address"]:eq('+element_i+') [data-addr-field="street"]').val(vcardUnescapeValue(parsed_value[2])).change();
+			$('[data-type="\\%address"]:eq('+element_i+') [data-addr-field="locality"]').val(vcardUnescapeValue(parsed_value[3])).change();
+			$('[data-type="\\%address"]:eq('+element_i+') [data-addr-field="region"]').val(vcardUnescapeValue(parsed_value[4])).change();
+			$('[data-type="\\%address"]:eq('+element_i+') [data-addr-field="code"]').val(vcardUnescapeValue(parsed_value[5])).change();
 
 
 			// values not directly supported by the editor (old values are kept intact)
@@ -1634,14 +1636,14 @@ function vcardToData(inputContact, inputIsReadonly)
 			// parsed (contentline_parse) = [1]->"group.", [2]->"name", [3]->";param;param", [4]->"value"
 			parsed=vcard_element[0].match(vCard.pre['contentline_parse']);
 			// parsed_value = [1..]->TEL-params
-			parsed_value=vcardSplitValue(parsed[3],';');
+			parsed_value=vcardSplitParam(parsed[3]);
 
 			// click to "add" button if not enought data rows present
-			if($('[id="vcard_editor"] [data-type="\\%phone"]').last().find('[data-type="value"]').attr('value')!='')
+			if($('[id="vcard_editor"] [data-type="\\%phone"]').last().find('[data-type="value"]').val()!='')
 				$('[id="vcard_editor"] [data-type="\\%phone"]').last().find('[data-type="\\%add"]').find('input[type="image"]').click();
 
 			// too many attributes (increase the maximum allowed)
-			if($('[id="vcard_editor"] [data-type="\\%phone"]').last().find('[data-type="value"]').attr('value')!='')
+			if($('[id="vcard_editor"] [data-type="\\%phone"]').last().find('[data-type="value"]').val()!='')
 				return false;
 
 			// get the "TYPE=" values array
@@ -1707,7 +1709,7 @@ function vcardToData(inputContact, inputIsReadonly)
 				$('[data-type="\\%phone"]:eq('+element_i+') [data-type="phone_type"]').find('[data-type="'+jqueryEscapeSelector(type_values_txt)+'"]').prop('selected',true);
 			}
 
-			$('[data-type="\\%phone"]:eq('+element_i+') [data-type="value"]').attr('value', vcardUnescapeValue(parsed[4]));
+			$('[data-type="\\%phone"]:eq('+element_i+') [data-type="value"]').val(vcardUnescapeValue(parsed[4])).change();
 
 			// values not directly supported by the editor (old values are kept intact)
 			vCard.tplM['contentline_TEL'][element_i]=vCard.tplC['contentline_TEL'];
@@ -1742,14 +1744,14 @@ function vcardToData(inputContact, inputIsReadonly)
 			// parsed (contentline_parse) = [1]->"group.", [2]->"name", [3]->";param;param", [4]->"value"
 			parsed=vcard_element[0].match(vCard.pre['contentline_parse']);
 			// parsed_value = [1..]->EMAIL-params
-			parsed_value=vcardSplitValue(parsed[3],';');
+			parsed_value=vcardSplitParam(parsed[3]);
 
 			// click to "add" button if not enought data rows present
-			if($('[id="vcard_editor"] [data-type="\\%email"]').last().find('[data-type="value"]').attr('value')!='')
+			if($('[id="vcard_editor"] [data-type="\\%email"]').last().find('[data-type="value"]').val()!='')
 				$('[id="vcard_editor"] [data-type="\\%email"]').last().find('[data-type="\\%add"]').find('input[type="image"]').click();
 
 			// too many attributes (increase the maximum allowed)
-			if($('[id="vcard_editor"] [data-type="\\%email"]').last().find('[data-type="value"]').attr('value')!='')
+			if($('[id="vcard_editor"] [data-type="\\%email"]').last().find('[data-type="value"]').val()!='')
 				return false;
 
 			// get the "TYPE=" values array
@@ -1814,7 +1816,7 @@ function vcardToData(inputContact, inputIsReadonly)
 				$('[data-type="\\%email"]:eq('+element_i+') [data-type="email_type"]').find('[data-type="'+jqueryEscapeSelector(type_values_txt)+'"]').prop('selected',true);
 			}
 
-			$('[data-type="\\%email"]:eq('+element_i+') [data-type="value"]').attr('value', vcardUnescapeValue(parsed[4]));
+			$('[data-type="\\%email"]:eq('+element_i+') [data-type="value"]').val(vcardUnescapeValue(parsed[4])).change();
 
 			// values not directly supported by the editor (old values are kept intact)
 			vCard.tplM['contentline_EMAIL'][element_i]=vCard.tplC['contentline_EMAIL'];
@@ -1849,14 +1851,14 @@ function vcardToData(inputContact, inputIsReadonly)
 			// parsed (contentline_parse) = [1]->"group.", [2]->"name", [3]->";param;param", [4]->"value"
 			parsed=vcard_element[0].match(vCard.pre['contentline_parse']);
 			// parsed_value = [1..]->URL-params
-			parsed_value=vcardSplitValue(parsed[3],';');
+			parsed_value=vcardSplitParam(parsed[3]);
 
 			// click to "add" button if not enought data rows present
-			if($('[id="vcard_editor"] [data-type="\\%url"]').last().find('[data-type="value"]').attr('value')!='')
+			if($('[id="vcard_editor"] [data-type="\\%url"]').last().find('[data-type="value"]').val()!='')
 				$('[id="vcard_editor"] [data-type="\\%url"]').last().find('[data-type="\\%add"]').find('input[type="image"]').click();
 
 			// too many attributes (increase the maximum allowed)
-			if($('[id="vcard_editor"] [data-type="\\%url"]').last().find('[data-type="value"]').attr('value')!='')
+			if($('[id="vcard_editor"] [data-type="\\%url"]').last().find('[data-type="value"]').val()!='')
 				return false;
 
 			// get the "TYPE=" values array
@@ -1921,7 +1923,7 @@ function vcardToData(inputContact, inputIsReadonly)
 				$('[data-type="\\%url"]:eq('+element_i+') [data-type="url_type"]').find('[data-type="'+jqueryEscapeSelector(type_values_txt)+'"]').prop('selected',true);
 			}
 
-			$('[data-type="\\%url"]:eq('+element_i+') [data-type="value"]').attr('value', vcardUnescapeValue(parsed[4]));
+			$('[data-type="\\%url"]:eq('+element_i+') [data-type="value"]').val(vcardUnescapeValue(parsed[4])).change();
 
 			// values not directly supported by the editor (old values are kept intact)
 			vCard.tplM['contentline_URL'][element_i]=vCard.tplC['contentline_URL'];
@@ -1956,14 +1958,14 @@ function vcardToData(inputContact, inputIsReadonly)
 			// parsed (contentline_parse) = [1]->"group.", [2]->"name", [3]->";param;param", [4]->"value"
 			parsed=vcard_element[0].match(vCard.pre['contentline_parse']);
 			// parsed_value = [1..]->X-ABRELATEDNAMES-params
-			parsed_value=vcardSplitValue(parsed[3],';');
+			parsed_value=vcardSplitParam(parsed[3]);
 
 			// click to "add" button if not enought data rows present
-			if($('[id="vcard_editor"] [data-type="\\%person"]').last().find('[data-type="value"]').attr('value')!='')
+			if($('[id="vcard_editor"] [data-type="\\%person"]').last().find('[data-type="value"]').val()!='')
 				$('[id="vcard_editor"] [data-type="\\%person"]').last().find('[data-type="\\%add"]').find('input[type="image"]').click();
 
 			// too many attributes (increase the maximum allowed)
-			if($('[id="vcard_editor"] [data-type="\\%person"]').last().find('[data-type="value"]').attr('value')!='')
+			if($('[id="vcard_editor"] [data-type="\\%person"]').last().find('[data-type="value"]').val()!='')
 				return false;
 
 			// get the "TYPE=" values array
@@ -2028,7 +2030,7 @@ function vcardToData(inputContact, inputIsReadonly)
 				$('[data-type="\\%person"]:eq('+element_i+') [data-type="person_type"]').find('[data-type="'+jqueryEscapeSelector(type_values_txt)+'"]').prop('selected',true);
 			}
 
-			$('[data-type="\\%person"]:eq('+element_i+') [data-type="value"]').attr('value', vcardUnescapeValue(parsed[4]));
+			$('[data-type="\\%person"]:eq('+element_i+') [data-type="value"]').val(vcardUnescapeValue(parsed[4])).change();
 
 			// values not directly supported by the editor (old values are kept intact)
 			vCard.tplM['contentline_X-ABRELATEDNAMES'][element_i]=vCard.tplC['contentline_X-ABRELATEDNAMES'];
@@ -2063,14 +2065,14 @@ function vcardToData(inputContact, inputIsReadonly)
 			// parsed (contentline_parse) = [1]->"group.", [2]->"name", [3]->";param;param", [4]->"value"
 			parsed=vcard_element[0].match(vCard.pre['contentline_parse']);
 			// parsed_value = [1..]->IMPP-params
-			parsed_value=vcardSplitValue(parsed[3],';');
+			parsed_value=vcardSplitParam(parsed[3]);
 
 			// click to "add" button if not enought data rows present
-			if($('[id="vcard_editor"] [data-type="\\%im"]').last().find('[data-type="value"]').attr('value')!='')
+			if($('[id="vcard_editor"] [data-type="\\%im"]').last().find('[data-type="value"]').val()!='')
 				$('[id="vcard_editor"] [data-type="\\%im"]').last().find('[data-type="\\%add"]').find('input[type="image"]').click();
 
 			// too many attributes (increase the maximum allowed)
-			if($('[id="vcard_editor"] [data-type="\\%im"]').last().find('[data-type="value"]').attr('value')!='')
+			if($('[id="vcard_editor"] [data-type="\\%im"]').last().find('[data-type="value"]').val()!='')
 				return false;
 
 			// get the "TYPE=" & "X-SERVICE-TYPE" values array
@@ -2154,7 +2156,7 @@ function vcardToData(inputContact, inputIsReadonly)
 				$('[data-type="\\%im"]:eq('+element_i+') [data-type="im_service_type"]').find('[data-type="'+jqueryEscapeSelector(service_type_value)+'"]').prop('selected',true);
 			}
 
-			$('[data-type="\\%im"]:eq('+element_i+') [data-type="value"]').attr('value', vcardUnescapeValue(parsed[4].replace(RegExp('^[^:]+:'),'')));
+			$('[data-type="\\%im"]:eq('+element_i+') [data-type="value"]').val(vcardUnescapeValue(parsed[4].replace(RegExp('^[^:]+:'),''))).change();
 
 			// values not directly supported by the editor (old values are kept intact)
 			vCard.tplM['contentline_IMPP'][element_i]=vCard.tplC['contentline_IMPP'];
@@ -2297,7 +2299,7 @@ function additionalRFCFixes(vcardString)
 			{
 				case 'TEL':
 					// remove the non-RFC params (Evolution bug)
-					parsed_value=vcardSplitValue(parsed[3],';');
+					parsed_value=vcardSplitParam(parsed[3]);
 					for(var j=parsed_value.length-1;j>0;j--)
 						if(parsed_value[j].match(RegExp('^'+vCard.re['tel-param']+'$','i'))==null)
 							parsed_value.splice(j,1);
@@ -2307,7 +2309,7 @@ function additionalRFCFixes(vcardString)
 					break;
 				case 'EMAIL':
 					// transform the params separated by ',' to 'TYPE=' params and remove the non-RFC params (Evolution bug)
-					parsed_value=vcardSplitValue(parsed[3],';');
+					parsed_value=vcardSplitParam(parsed[3]);
 					for(var j=parsed_value.length-1;j>0;j--)
 						if(parsed_value[j].match(RegExp('^'+vCard.re['email-param']+'$','i'))==null)
 						{
@@ -2358,7 +2360,7 @@ function normalizeVcard(vcardString)
 		additional_related='';
 
 		// parsed = [1]->"group.", [2]->"name", [3]->";param;param", [4]->"value"
-		params_array=vcardSplitValue(parsed[3],';');
+		params_array=vcardSplitParam(parsed[3]);
 		// we transform the old X-* IM attributes to new IMPP (internally used by editor)
 		switch(parsed[2])
 		{

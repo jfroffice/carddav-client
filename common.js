@@ -53,8 +53,8 @@ function localizeAddressTypes()
 				],
 		'ad':	[	'Andorra',
 					{fid:  2, type: 'input', 'data-addr-field': 'street', placeholder: localization[globalInterfaceLanguage].pholderAddressStreet},
-					{fid:  4, type: 'input', 'data-addr-field': 'code', placeholder: localization[globalInterfaceLanguage].pholderAddressPostalCode},
-					{fid:  5, type: 'input', 'data-addr-field': 'locality', placeholder: localization[globalInterfaceLanguage].pholderAddressCity},
+					{fid:  5, type: 'input', 'data-addr-field': 'code', placeholder: localization[globalInterfaceLanguage].pholderAddressPostalCode},
+					{fid:  6, type: 'input', 'data-addr-field': 'locality', placeholder: localization[globalInterfaceLanguage].pholderAddressCity},
 					{fid: 11, type: 'country'}
 				],
 		'ao':	[	'Angola',
@@ -1476,6 +1476,22 @@ function vcardUnescapeValue(inputValue)
 				outputValue+=inputValue[i];
 	}
 	return outputValue;
+}
+
+// Split parameters and remove double quotes from values (if parameter values are quoted)
+function vcardSplitParam(inputValue)
+{
+	var result=vcardSplitValue(inputValue, ';');
+	var index;
+
+	for(var i=0;i<result.length;i++)
+	{
+		index=result[i].indexOf('=');
+		if(index!=-1 && index+1<result[i].length && result[i][index+1]=='"' && result[i][result[i].length-1]=='"')
+			result[i]=result[i].substring(0,index+1)+result[i].substring(index+2,result[i].length-1);
+	}
+
+	return result;
 }
 
 // Split string by separator (but not '\' escaped separator)

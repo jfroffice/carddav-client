@@ -16,7 +16,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// globalAccountSettings must be an array (can be undefined if you use globalNetworkAccountSettings)
+// globalAccountSettings must be an array (can be undefined if you use globalNetworkCheckSettings or globalNetworkAccountSettings)
 //  the href value is a "principal URL" - the last character in href must be '/'
 //    principal URL != collection URL -> the client automatically detects collections for each principal URL
 //    PROPER principal URL looks like:
@@ -27,36 +27,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //      https://server.com:8443/caldav.php/USER/addressbook/		<- url to addressbook collection
 //      https://server.com:8443/principals/users/USER				<- missing '/'
 //      https://server.com:8443/caldav.php/USER						<- missing '/'
-// the crossDomain sets jQuery's ajax crossDomain value (set to true if your CardDavMATE installation has not the same [protocol,hostname,port] as your CardDav server - by default true)
+// the crossDomain sets jQuery's ajax crossDomain value (must be true if your CardDavMATE installation has not the same [protocol,hostname,port] as your CardDav server - by default null = autodetect /detected setting is shown in the console/)
 // the withCredentials sets jQuery's ajax withCredentials value for cross domain queries (if true, Access-Control-Allow-Origin "*" is not allowed)
 // the syncInterval sets how often (in miliseconds) to asynchronously sync the active collection on background (but only if the browser window has focus)
 // the timeOut sets the timeout for jQuery .ajax call (in miliseconds)
 // the lockTimeOut sets the LOCK Timeout value (in miliseconds)
-//var globalAccountSettings=[{href: 'https://server1.com:8443/principals/users/USERNAME1/', crossDomain: true, withCredentials: false, userAuth: {userName: 'USERNAME1', userPassword: 'PASSWORD1'}, syncInterval: 15000, timeOut: 30000, lockTimeOut: 10000}, {href: 'https://server1.com:8443/principals/users/USERNAME2/', crossDomain: true, withCredentials: false, userAuth: {userName: 'USERNAME2', userPassword: 'PASSWORD2'}, syncInterval: 15000, timeOut: 30000, lockTimeOut: 10000}, {href: 'https://server2.com:8443/principals/users/USERNAME/', crossDomain: true, withCredentials: false, userAuth: {userName: 'USERNAME', userPassword: 'PASSWORD'}, syncInterval:15000, timeOut: 30000, lockTimeOut: 10000}];
+//var globalAccountSettings=[{href: 'https://server1.com:8443/principals/users/USERNAME1/', crossDomain: null, withCredentials: false, userAuth: {userName: 'USERNAME1', userPassword: 'PASSWORD1'}, syncInterval: 30000, timeOut: 30000, lockTimeOut: 10000}, {href: 'https://server1.com:8443/principals/users/USERNAME2/', crossDomain: null, withCredentials: false, userAuth: {userName: 'USERNAME2', userPassword: 'PASSWORD2'}, syncInterval: 30000, timeOut: 30000, lockTimeOut: 10000}, {href: 'https://server2.com:8443/principals/users/USERNAME/', crossDomain: null, withCredentials: false, userAuth: {userName: 'USERNAME', userPassword: 'PASSWORD'}, syncInterval: 30000, timeOut: 30000, lockTimeOut: 10000}];
 
 // if set, the client authenticates against the href URL (the last character in href must be '/') and if the authentication is successful it appends the USER + '/' to end of href and sets the userAuth: {userName: USER, userPassword: PASSWORD}
-// then the client use the modified globalNetworkCheckSettings in the same way as the globalAccountSettings
+// then the client uses the modified globalNetworkCheckSettings in the same way as the globalAccountSettings
 // this option ivokes a login screen and disallows access until successfull authentication
 // the additionalResources array can contain additional resources (shared resources accessible by all users), for example: additionalResources: ['company','customers'] ... href values for these resources are created in the same way as described above for the USER
 // see globalAccountSettings for more information
-// Lion server (cross domain) example (http + https setup):
-//var globalNetworkCheckSettings={href: 'http://lion.server.com:8008/principals/users/', additionalResources: [], crossDomain: true, withCredentials: false, syncInterval: 15000, timeOut: 30000, lockTimeOut: 10000}
-//var globalNetworkCheckSettings={href: 'https://lion.server.com:8443/principals/users/', additionalResources: [], crossDomain: true, withCredentials: false, syncInterval: 15000, timeOut: 30000, lockTimeOut: 10000}
-// Davical example (cross domain):
-//var globalNetworkCheckSettings={href: 'http://davical.server.com:8080/caldav.php/', additionalResources: [], crossDomain: true, withCredentials: false, syncInterval: 15000, timeOut: 30000, lockTimeOut: 10000}
+// Lion server example (http + https setup; see misc/readme_lion.txt for server setup):
+//var globalNetworkCheckSettings={href: 'http://lion.server.com:8008/principals/users/', additionalResources: [], crossDomain: null, withCredentials: false, syncInterval: 30000, timeOut: 30000, lockTimeOut: 10000}
+//var globalNetworkCheckSettings={href: 'https://lion.server.com:8443/principals/users/', additionalResources: [], crossDomain: null, withCredentials: false, syncInterval: 30000, timeOut: 30000, lockTimeOut: 10000}
+// Davical example (for cross-domain setup see misc/config_davical.txt):
+//var globalNetworkCheckSettings={href: 'http://davical.server.com:8080/caldav.php/', additionalResources: [], crossDomain: null, withCredentials: false, syncInterval: 30000, timeOut: 30000, lockTimeOut: 10000}
 // Davical example (CardDavMATE installed into Davical subdirectory - works out of the box, no additional setup required):
-var globalNetworkCheckSettings={href: 'http://cloud.pubplongeeaixois.org/caldav.php/', additionalResources: [], crossDomain: false, withCredentials: false, syncInterval: 15000, timeOut: 30000, lockTimeOut: 10000}
-
-
-//var globalNetworkCheckSettings={href: location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '')+location.pathname.replace(RegExp('/+[^/]+/*$'),'')+'/caldav.php/ppa/', additionalResources: [], crossDomain: false, withCredentials: false, syncInterval: 15000, timeOut: 30000, lockTimeOut: 10000}
+var globalNetworkCheckSettings={href: location.protocol+'//'+location.hostname+(location.port ? ':'+location.port: '')+location.pathname.replace(RegExp('/+[^/]+/*$'),'')+'/caldav.php/', additionalResources: [], crossDomain: null, withCredentials: false, syncInterval: 30000, timeOut: 30000, lockTimeOut: 10000}
 
 // if set, the configuration is loaded from the network (using HTTP auth) - the returned configuration XML settings are added
-//  to globalAccountSettings ... it is possible to combine this option with the globalAccountSettings although it is
-//  recommented to use it without this option
+//  to globalAccountSettings ... it is possible to combine this option with the globalAccountSettings although it is not recommended
 // this option ivokes a login screen and disallows access until the client get correct XML configuration file from the server
 // the syncInterval is currently unused (the configuration XML is loaded only once)
 // the timeOut sets the timeout for jQuery .ajax call (in miliseconds)
-//var globalNetworkAccountSettings={href: 'https://www.config-server.com/auth/', crossDomain: false, withCredentials: false, syncInterval: 0, timeOut: 30000};
+//var globalNetworkAccountSettings={href: 'https://www.config-server.com/auth/', crossDomain: null, withCredentials: false, syncInterval: 0, timeOut: 30000};
 
 // default interface language - see localization.js
 //  supported languages (note: value is case sensitive):
@@ -80,7 +76,7 @@ var globalCompatibility={anniversaryOutputFormat: ['apple']}
 //var globalSortAlphabet=null;	// use localeCompare()
 var globalSortAlphabet='0123456789AÁÄBCČDĎEÉFGHIÍJKLĹĽMNŇOÓÖŐÔPQRŔSŠTŤUÚÜŰVWXYÝZŽaáäbcčdďeéfghiíjklĺľmnňoóöőôpqrŕsšßtťuúüűvwxyýzž';	// use custom alphabet sorting
 // search functionality character equivalence (transformation to ASCII: key = regex text, value = result character)
-var globalSearchTransformAlphabet={'[ÀàÁáÂâÄäÆæÃãÅåĀā]': 'a', '[ÇçĆćČč]': 'c', '[Ďď]': 'd', '[ÈèÉéÊêËëĒēĖėĘę]': 'e', '[ÎîÏïÍíĪīĮįÌì]': 'i', '[ŁłĽľĹĺ]': 'l', '[ÑñŃńŇň]': 'n', '[ÔôÖöÒòÓóŒœØøŌōÕõ]': 'o', '[ßŚśŠš]': 's', '[Ťť]': 't', '[ÛûÜüÙùÚúŪūŰű]': 'u', '[ÝýŸÿ]': 'y', '[ŽžŹźŻż]': 'z'};
+var globalSearchTransformAlphabet={'[ÀàÁáÂâÄäÆæÃãÅåĀā]': 'a', '[ÇçĆćČč]': 'c', '[Ďď]': 'd', '[ÈèÉéÊêËëĒēĖėĘęĚě]': 'e', '[ÎîÏïÍíĪīĮįÌì]': 'i', '[ŁłĽľĹĺ]': 'l', '[ÑñŃńŇň]': 'n', '[ÔôÖöÒòÓóŒœØøŌōÕõ]': 'o', '[Řř]': 'r', '[ẞßŚśŠš]': 's', '[Ťť]': 't', '[ÛûÜüÙùÚúŪūŰűŮů]': 'u', '[ÝýŸÿ]': 'y', '[ŽžŹźŻż]': 'z'};
 
 // set the collection sorting, displaying and storing FN attribute into vCard - use a pair of values separated by a comma (spaces are allowed)
 //  possible values:

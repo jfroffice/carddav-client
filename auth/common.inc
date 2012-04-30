@@ -8,21 +8,26 @@
 	    for($j=0;$j<$level;$j++)
 		$result.="	";
 
-	    $result.="<".htmlspecialchars($k);
-	    if($k=='resource')
-		$result.=" xmlns=\"urn:com.inf-it:configuration\"";
-	    $result.=">";
-	    if(is_array($v))
-	    {
-		$result.="\n";
-		array_to_xml($v,$level+1);
-	    for($j=0;$j<$level;$j++)
-		$result.="	";
-	    }
+	    if(is_numeric($k))
+		array_to_xml($v,$level);
 	    else
-		$result.=htmlspecialchars($v);
+	    {
+		$result.="<".htmlspecialchars($k);
+		if($k=='resource')
+		    $result.=" xmlns=\"urn:com.inf-it:configuration\"";
+		$result.=">";
+		if(is_array($v))
+		{
+		    $result.="\n";
+		    array_to_xml($v,$level+1);
+		    for($j=0;$j<$level;$j++)
+			$result.="	";
+		}
+		else
+		    $result.=htmlspecialchars($v);
 
-	    $result.="</".htmlspecialchars($k).">\n";
+		$result.="</".htmlspecialchars($k).">\n";
+	    }
 	}
 	return $result;
     }

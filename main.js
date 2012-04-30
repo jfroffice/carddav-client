@@ -16,7 +16,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-var globalCardDavMATEVersion='0.9.5';
+var globalCardDavMATEVersion='0.9.6';
 var globalVersionCheckURL='http://www.inf-it.com/versioncheck/CardDavMATE/?v='+globalCardDavMATEVersion;
 var globalAddressbookList = new AddressbookList();
 var globalResourceList=new ResourceList();
@@ -73,10 +73,11 @@ function logout()
 		{
 			if(typeof globalDemoMode=='undefined')
 			{
-				$('[data-type="system_username"]').val('');
-				$('[data-type="system_password"]').val('');
+				$('[data-type="system_username"]').val('').change();
+				$('[data-type="system_password"]').val('').change();
 			}
 			$('#LoginLoader').fadeOut(1200);
+			$('#System').find('div.update_d').css('display','none');
 		}
 	);
 	$('#LoginPage').fadeTo(2000,1,function(){init()});
@@ -145,6 +146,8 @@ function init()
 	$('[data-type="family"]').attr('placeholder',localization[globalInterfaceLanguage].pholderFamily);
 	$('[data-type="middle"]').attr('placeholder',localization[globalInterfaceLanguage].pholderMiddle);
 	$('[data-type="nickname"]').attr('placeholder',localization[globalInterfaceLanguage].pholderNickname);
+	$('[data-type="prefix"]').attr('placeholder',localization[globalInterfaceLanguage].pholderPrefix);
+	$('[data-type="suffix"]').attr('placeholder',localization[globalInterfaceLanguage].pholderSuffix);
 	$('[data-type="date_bday"]').attr('placeholder',localization[globalInterfaceLanguage].pholderBday);
 	$('[data-type="date_anniversary"]').attr('placeholder',localization[globalInterfaceLanguage].pholderAnniversary);
 	$('[data-type="title"]').attr('placeholder',localization[globalInterfaceLanguage].pholderTitle);
@@ -238,16 +241,19 @@ function init()
 	cleanABListTemplate = $('#ABListTemplate').clone().wrap('<div>').parent().html();
 	cleanVcardTemplate = $('#vCardTemplate').clone().wrap('<div>').parent().html();
 
+	// CUSTOM PLACEHOLDER (initialization for the whole page)
+	$('input[placeholder],textarea[placeholder]').placeholder();
+
 	// browser check
-	if($.browser.msie || $.browser.opera)
+	if(($.browser.msie && parseInt($.browser.version, 10)<9) || $.browser.opera)
 		$('#login_message').css('display','').find('td').text(localization[globalInterfaceLanguage].unsupportedBrowser);
 
 	if(typeof globalDemoMode!='undefined')
 	{
 		if(typeof globalDemoMode['userName']!=undefined)
-			$('[data-type="system_username"]').val(globalDemoMode['userName']);
+			$('[data-type="system_username"]').val(globalDemoMode['userName']).change();
 		if(typeof globalDemoMode['userPassword']!=undefined)
-			$('[data-type="system_password"]').val(globalDemoMode['userPassword']);
+			$('[data-type="system_password"]').val(globalDemoMode['userPassword']).change();
 	}
 	loadConfig();
 }
@@ -270,6 +276,21 @@ function run()
 	if(typeof globalNewVersionNotifyUsers=='undefined' || globalNewVersionNotifyUsers!=null)
 		netVersionCheck();
 
+	// Automatically detect crossDomain settings
+	var detectedHref=location.protocol+'//'+location.hostname+(location.port ? ':'+location.port : '');
+	for(var i=0;i<globalAccountSettings.length;i++)
+	{
+		if(globalAccountSettings[i].crossDomain==undefined || typeof globalAccountSettings[i].crossDomain!='boolean')
+		{
+			if(globalAccountSettings[i].href.indexOf(detectedHref)==0)
+				globalAccountSettings[i].crossDomain=false;
+			else
+				globalAccountSettings[i].crossDomain=true;
+
+			console.log("Info: [account: '"+globalAccountSettings[i].href.replace('\/\/','//'+globalAccountSettings[i].userAuth.userName+'@')+"'] crossDomain set to: '"+(globalAccountSettings[i].crossDomain==true ? 'true' : 'false')+"'");
+		}
+	}
+
 	loadResources(globalAccountSettings, true);
 
 	// automatically reload resources
@@ -280,6 +301,8 @@ function run()
 function loadConfig()
 {
 	var configLoaded=true;
+	// Automatically detect crossDomain settings
+	var detectedHref=location.protocol+'//'+location.hostname+(location.port ? ':'+location.port : '');
 
 	// check username and password against the server and create config from globalNetworkCheckSettings
 	if(typeof globalNetworkCheckSettings!='undefined' && globalNetworkCheckSettings!=null)
@@ -292,10 +315,20 @@ function loadConfig()
 		}
 		else
 		{
+			if(globalNetworkCheckSettings.crossDomain==undefined || typeof globalNetworkCheckSettings.crossDomain!='boolean')
+			{
+				if(globalNetworkCheckSettings.href.indexOf(detectedHref)==0)
+					globalNetworkCheckSettings.crossDomain=false;
+				else
+					globalNetworkCheckSettings.crossDomain=true;
+
+				console.log("Info: [globalNetworkCheckSettings: '"+globalNetworkCheckSettings.href+"'] crossDomain set to: '"+(globalNetworkCheckSettings.crossDomain==true ? 'true' : 'false')+"'");
+			}
 			netCheckAndCreateConfiguration(globalNetworkCheckSettings,'async');
 			return true;
 		}
 	}
+
 	// load the configuration XML(s) from the network
 	if(typeof globalNetworkAccountSettings!='undefined' && globalNetworkAccountSettings!=null)
 	{
@@ -307,6 +340,15 @@ function loadConfig()
 		}
 		else
 		{
+			if(globalNetworkAccountSettings.crossDomain==undefined || typeof globalNetworkAccountSettings.crossDomain!='boolean')
+			{
+				if(globalNetworkAccountSettings.href.indexOf(detectedHref)==0)
+					globalNetworkAccountSettings.crossDomain=false;
+				else
+					globalNetworkAccountSettings.crossDomain=true;
+
+				console.log("Info: [globalNetworkAccountSettings: '"+globalNetworkAccountSettings.href+"'] crossDomain set to: '"+(globalNetworkAccountSettings.crossDomain==true ? 'true' : 'false')+"'");
+			}
 			netLoadConfiguration(globalNetworkAccountSettings,'async');
 			return true;
 		}

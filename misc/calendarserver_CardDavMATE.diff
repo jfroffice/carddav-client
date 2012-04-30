@@ -47,7 +47,7 @@ diff -ru web2/server.py web2-CardDavMATE/server.py
 +    if not response.headers.hasHeader('Access-Control-Allow-Methods'):
 +        response.headers.setHeader('Access-Control-Allow-Methods','GET,POST,OPTIONS,PROPFIND,REPORT,PUT,MOVE,DELETE,LOCK,UNLOCK')
 +    if not response.headers.hasHeader('Access-Control-Allow-Headers'):
-+        response.headers.setHeader('Access-Control-Allow-Headers','User-Agent,Authorization,Content-type,Depth,If-match,If-None-Match,Lock-Token,Timeout,Destination,Overwrite,X-client')
++        response.headers.setHeader('Access-Control-Allow-Headers','User-Agent,Authorization,Content-type,Depth,If-match,If-None-Match,Lock-Token,Timeout,Destination,Overwrite,X-client,X-Requested-With')
 +    if not response.headers.hasHeader('Access-Control-Allow-Credentials'):
 +        response.headers.setHeader('Access-Control-Allow-Credentials','true')
 +    # end CardDavMATE section
