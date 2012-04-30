@@ -536,6 +536,7 @@ localization['fr_FR']=
 	pholderAddressSuburb: 'Suburb',
 	pholderAddressTownshipDistrict: 'Township/District',
 	pholderAddressZip: 'CP',
+
 	txtAddressCountryAF: 'Afghanistan',
 	txtAddressCountryAL: 'Albanie',
 	txtAddressCountryDZ: 'Algérie',
