@@ -759,29 +759,29 @@ localization['fr_FR']=
 	unsupportedBrowser: 'Note: votre navigateur n`est pas supporté!',
 
 	/* addressbook.js */
-	contactConcurrentChange: 'The contact on the server was changed and reloaded!',
-	contactRfcNotCompliant: 'Error: this contact (vCard) is not compliant with RFC 2426!',
+	contactConcurrentChange: 'Le contact sur le serveur a été modifié et a été rechargé!',
+	contactRfcNotCompliant: 'Erreur: ce contact (vCard) ne respecte pas la norme RFC 2426!',
 
 	/* webdav_protocol.js */
-	updateNotification: 'CardDavMATE %new_ver% available (you have %curr_ver%) - %url%',
-	succContactSaved: 'Contact successfully saved!',
-	succContactDeleted: 'Contact successfully deleted!',
-	succContactDeletedFromGroup: 'Contact successfully deleted from the active contact group!',
-	errUnableSync: 'Error: \'unable to sync resource\': try again later!',
-	errUnableLockBegin: 'Error: \'unable to lock resource\': %%!',
-	errUnableUnlockBegin: 'Error: \'unable to unlock resource\': %%!',
-	errUnableSaveBegin: 'Error: \'unable to save the contact\': %%!',
-	errUnableDeleteBegin: 'Error: \'unable to delete the contact\': %%!',
-	errResourceLocked: 'resource already locked',
-	errHttpCommon: 'error code %%',
-	errHttp401: 'unauthorized',
-	errHttp403: 'forbidden',
-	errHttp405: 'method not allowed',
+	updateNotification: 'CardDavMATE %new_ver% est disponible (vous ètes actuellement en version %curr_ver%) - %url%',
+	succContactSaved: 'Le contact a été enregistré avec succès!',
+	succContactDeleted: 'Le contact a été supprimé avec succès!',
+	succContactDeletedFromGroup: 'Le contact a été supprimé avec succès du groupe de contact sélectionné!',
+	errUnableSync: 'Erreur: \'impossible de synchroniser la ressource\': essayer à nouveau plutard!',
+	errUnableLockBegin: 'Error: \'impossible de verrouiller la ressource\': %%!',
+	errUnableUnlockBegin: 'Error: \'impossible de déverrouiller la ressource\': %%!',
+	errUnableSaveBegin: 'Error: \'impossible de sauvegarder le contact\': %%!',
+	errUnableDeleteBegin: 'Error: \'impossible de supprimer le contact\': %%!',
+	errResourceLocked: 'la ressource est déjà verrouillé',
+	errHttpCommon: 'code d\'erreur %%',
+	errHttp401: 'non autorisé',
+	errHttp403: 'interdit',
+	errHttp405: 'methode non autorisé',
 	errHttp408: 'request timeout',
-	errHttp410: 'contact is no longer available at the server',
-	errHttp412: 'somebody else has already changed it on the server',
-	errHttp500: 'internal server error',
-	errHttp501: 'not implemented'
+	errHttp410: 'le contact n\'est plus disponible sur le serveur',
+	errHttp412: 'quelqu\'un d\'autre a la déjà modifié sur le serveur',
+	errHttp500: 'erreur interne du serveur',
+	errHttp501: 'non implémenté'
 }
 
 localization['sk_SK']=	/* Jan Mate <jan.mate@inf-it.com> */
